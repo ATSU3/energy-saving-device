@@ -9,5 +9,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  Serial.print("WiFi MAC Address:");
+  Serial.println(WiFi.macAddress());
+  delay(5000);
 }
