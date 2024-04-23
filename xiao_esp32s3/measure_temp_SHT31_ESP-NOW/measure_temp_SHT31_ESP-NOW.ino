@@ -6,7 +6,7 @@
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 // 送信先のMACアドレス
-uint8_t broadcastAddress[] = {0xC0, 0x49, 0xEF, 0xB5, 0x0E, 0xFC};
+uint8_t broadcastAddress[] = {0x74, 0x4D, 0xBD, 0x81, 0x69, 0x30};
 
 // 送信データ構造体
 struct SensorData {
@@ -44,7 +44,7 @@ void setup() {
   esp_now_register_send_cb(OnDataSent);
 
   // SHT31の初期化
-  if (!sht31.begin(0x44)) {   // SHT31のデフォルトI2Cアドレスは0x44
+  if (!sht31.begin(0x45)) {   // SHT31のデフォルトI2Cアドレスは0x44
     Serial.println("Couldn't find SHT31");
     while (1) delay(1);
   }
