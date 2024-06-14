@@ -65,7 +65,7 @@ void setup() {
   }
 
   // area_idを設定
-  dataToSend.area_id = 2;
+  dataToSend.area_id = 3;
 }
 
 void loop() {
