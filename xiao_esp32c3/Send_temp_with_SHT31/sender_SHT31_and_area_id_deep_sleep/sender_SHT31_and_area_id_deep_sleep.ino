@@ -3,6 +3,10 @@
 #include <Wire.h>
 #include "Adafruit_SHT31.h"
 
+// DeepSleepのための時間設定
+#define uS_TO_S_FACTOR 1000000 
+#define TIME_TO_SLEEP 5
+
 // SHT31センサーのインスタンスを作成
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
@@ -61,10 +65,12 @@ void setup() {
   }
 
   // area_idを設定
-  dataToSend.area_id = 1;
+  dataToSend.area_id = 2;
 }
 
 void loop() {
+
+  unsigned long starttime = micros();
   // SHT31センサーから温度を取得
   dataToSend.temperature = sht31.readTemperature();
   if (!isnan(dataToSend.temperature)) {  // 温度が正常に読み取れた場合
@@ -76,11 +82,11 @@ void loop() {
   } else {
     Serial.println("Failed to read temperature");
   }
-  
-  // Deep Sleepに移行
-  esp_sleep_enable_timer_wakeup(60 * 1000000); // 1分
-  Serial.println("Going to sleep now");
-  delay(100);
-  esp_deep_sleep_start();
+
+  // DeepSleepする時間（マイクロ秒）を計算する
+  uint64_t sleeptime = TIME_TO_SLEEP * uS_TO_S_FACTOR - (micros() - starttime);
+  Serial.printf("sleep: %.2f\r\n", (double)sleeptime / uS_TO_S_FACTOR);
+  delayMicroseconds(sleeptime);
+
 }
 
