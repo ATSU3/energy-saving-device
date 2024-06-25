@@ -7,7 +7,8 @@
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 // 送信先のMACアドレス
-uint8_t broadcastAddress[] = {0xEC, 0xDA, 0x3B, 0xBB, 0xB1, 0xE4};
+// uint8_t broadcastAddress[] = {0xEC, 0xDA, 0x3B, 0xBB, 0xB1, 0xE4};
+uint8_t broadcastAddress[] = {0xEC, 0xDA, 0x3B, 0xBB, 0xDB, 0xB8};
 
 // ピア情報を保持する構造体
 esp_now_peer_info_t peerInfo;
@@ -61,7 +62,7 @@ void setup() {
   }
 
   // area_idを設定
-  dataToSend.area_id = 1;
+  dataToSend.area_id = 2;
 }
 
 void loop() {
