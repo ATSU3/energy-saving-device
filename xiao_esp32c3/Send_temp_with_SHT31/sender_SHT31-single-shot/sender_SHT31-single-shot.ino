@@ -66,9 +66,26 @@ void setup() {
 }
 
 void loop() {
-  // SHT31センサーから温度を取得
-  dataToSend.temperature = sht31.readTemperature();
-  if (!isnan(dataToSend.temperature)) {  // 温度が正常に読み取れた場合
+  // SHT31センサーにシングルショットモードの測定コマンドを送信
+  Wire.beginTransmission(0x45); // SHT31のI2Cアドレスに送信を開始
+  Wire.write(0x24);             // シングルショット測定のコマンドMSB
+  Wire.write(0x00);             // シングルショット測定のコマンドLSB
+  Wire.endTransmission();
+
+  delay(15); // 測定完了までの待機時間（通常は15ms）
+
+  // 測定結果を読み取る
+  Wire.requestFrom(0x45, 6); // 6バイトのデータをリクエスト（温度2バイト + CRC1バイト + 湿度2バイト + CRC1バイト）
+
+  if (Wire.available() == 6) {
+    uint16_t tempData = Wire.read() << 8 | Wire.read(); // 温度データ
+    Wire.read(); // CRCバイトを無視
+    // uint16_t humidityData = Wire.read() << 8 | Wire.read(); // 湿度データ
+    // Wire.read(); // CRCバイトを無視
+
+    // 温度データを計算
+    dataToSend.temperature = -45.0 + 175.0 * ((float)tempData / 65535.0);
+
     Serial.print("Temperature: ");
     Serial.println(dataToSend.temperature);
     
@@ -77,5 +94,6 @@ void loop() {
   } else {
     Serial.println("Failed to read temperature");
   }
-  delay(5000); // 1秒間隔でデータを送信
+
+  delay(5000); // 5秒間隔でデータを送信
 }
